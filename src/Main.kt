@@ -16,14 +16,16 @@ suspend fun main() = coroutineScope {
                 print("Введите зарплату сотрудника: ")
                 val money = readln().toDouble() ?: 0.0
 
-                val newPerson = Person(name, money)
-                personManager.addPerson(newPerson)
-                addPassword(newPerson)
+                personManager.addPerson(Person(name, money))
                 println("Сотрудник создан")
             }
             "2" -> {
                 println("Чтение базы данных:")
-                val wait = launch { readDataPersonList() }
+                val wait = launch {
+                    println("Создание паролей...")
+                    personList.forEach {addPassword(it)}
+                    readDataPersonList()
+                }
                 launch { if (stopWork()) wait.cancelAndJoin() }
                 break
             }
